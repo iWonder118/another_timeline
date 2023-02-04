@@ -1,1 +1,3 @@
 /conf/twitter_api_key.conf
+/result/
+/result/*.csv

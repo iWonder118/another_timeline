@@ -6,6 +6,8 @@ import datetime
 import configparser
 import urllib.error
 import urllib.request
+import sys
+import re
 
 #設定値の取得
 config = configparser.ConfigParser()
@@ -36,26 +38,36 @@ def download_file(url, dst_path):
     except urllib.error.URLError as e:
         print(e)
 
+
 def make_directory(dir_name="example"):
     if not os.path.exists(dir_name):
         os.mkdir(dir_name)
 
+
 def over_write_csv(file_path, tweet_data=[]):
     with open(file_path, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f, lineterminator="\n")
-        if not os.path.exists(file_path):
+        if os.path.getsize(file_path) == 0:
             writer.writerow(["id","created_at","text","fav","RT","rep","place"])
         writer.writerows(tweet_data)
 
+
+def check_date(input):
+    pattern = "\d{4}-\d{2}-\d{2}"
+    return re.match(pattern, input)
+
+
 def main():
+    args = sys.argv
+    if not check_date(args[1]) and not check_date(args[2]):
+        print("not Date format... (ex: yyyy-mm-dd)")
+        exit(1)
+    start_date = datetime.datetime.strptime(args[1], '%Y-%m-%d')
+    end_date = datetime.datetime.strptime(args[2], '%Y-%m-%d')
     #ファイルを保存するディレクトリ作成
     make_directory(result_path)
-    make_directory(video_path)
-    make_directory(photo_path)
     result_file = "{}/{}.csv".format(result_path, file_name)
     result_file_no_lf = "{}/{}_no_lf.csv".format(result_path, file_name)
-    start_date = datetime.datetime(2009, 9, 30)
-    end_date = datetime.datetime(2023, 2, 4)
     since_date = start_date
     until_date = since_date + datetime.timedelta(days=1)
     while end_date > since_date:
@@ -88,23 +100,6 @@ def main():
                                     result.reply_count,
                                     result.place])
                     
-                    #コンテンツ取得
-                    # if hasattr(result, "extended_entities"):
-                    #     media = result.extended_entities["media"]
-                    #     for m in media:
-                    #         #動画の時
-                    #         if m["type"] == "video":
-                    #             origin = [variant["url"] for variant in m["video_info"]
-                    #                 ["variants"] if variant["content_type"] == "video/mp4"][0]
-                    #             dst_path = "{}/{}.mp4".format(video_path, datetime.datetime.now())
-                    #             download_file(origin, dst_path)
-                    #         #画像の時
-                    #         elif m["type"] == "photo":
-                    #             img_url = result.extended_entities["media"][0]["media_url"]
-                    #             dst_path = "{}/{}.png".format(photo_path, datetime.datetime.now())
-                    #             download_file(img_url, dst_path)
-                    #     sleep(1)
-                    
                     print("now Getting Tweet: {}({})".format(result.text, index+1))
                     
                 except Exception as e:
@@ -112,6 +107,6 @@ def main():
         
         over_write_csv(result_file, tweet_data)
         over_write_csv(result_file_no_lf, tweet_data_no_lf)
-        sleep(5)
+        sleep(10)
 if __name__ == "__main__":
     main()

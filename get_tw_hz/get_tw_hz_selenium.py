@@ -64,7 +64,7 @@ class TwitterDriver:
     def search(self, query):
         results = []
         self.driver.get(twitter_base + query)
-        time.sleep(10)
+        time.sleep(20)
         time_line = filter(
             lambda e: e.get_attribute("data-testid") == "tweet",
             self.driver.find_elements(
@@ -134,7 +134,6 @@ class TwitterDriver:
                     result["reply_count"],
                     index + 1))
             results.append(result)
-        time.sleep(5)
         return results
 
     def close(self):
@@ -193,7 +192,7 @@ def main():
                                result["reply_count"]])
             tweet_data_no_lf.append([result["id"],
                                      result["created_at"],
-                                     result["text"],
+                                     result["text"].replace("\n", ""),
                                      result["favorite_count"],
                                      result["retweet_count"],
                                      result["reply_count"]])

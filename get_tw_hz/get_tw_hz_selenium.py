@@ -64,7 +64,7 @@ class TwitterDriver:
     def search(self, query):
         results = []
         self.driver.get(twitter_base + query)
-        time.sleep(20)
+        time.sleep(10)
         time_line = filter(
             lambda e: e.get_attribute("data-testid") == "tweet",
             self.driver.find_elements(

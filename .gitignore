@@ -1,4 +1,4 @@
-/config/twitter_api_key.conf
+/config/*
 /get_tw_hz/bk*
 get_tw_hz/result/*.csv
 

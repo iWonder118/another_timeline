@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: another_timeline_container
+service: another-timeline-container
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -25,8 +25,13 @@ provider:
   runtime: python3.8
 
 # you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
+  stage: dev
+  region: ${self:custom.env.region}
+  timeout: 30 
+
+
+custom:
+  env: ${file(./config/env.yml)}
 
 # you can add statements to the Lambda function's IAM Role here
 #  iam:
@@ -59,8 +64,13 @@ provider:
 #    - include-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  parse:
+    image: "${self:custom.env.accountID}.dkr.ecr.${self:custom.env.region}.amazonaws.com/\
+      ${self:custom.env.repository}@${self:custom.env.digest}"
+    events:
+      - http:
+          path: tw_hz
+          method: get
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

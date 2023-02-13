@@ -1,3 +1,24 @@
 /conf/twitter_api_key.conf
-/result/
-/result/*.csv
+/get_tw_hz/bk*
+get_tw_hz/result/*.csv
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Serverless directories
+.serverless

@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.8
+FROM --platform=linux/amd64 public.ecr.aws/lambda/python:3.8
 
 # install build libs
 RUN yum groupinstall -y "Development Tools" \
@@ -16,6 +16,15 @@ RUN  curl -L "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOX
     && cd .. \
     && rm -rf mecab-0.996*
 
+WORKDIR /tmp
+RUN curl -L "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM" -o mecab-ipadic-2.7.0-20070801.tar.gz \
+    && tar -zxvf mecab-ipadic-2.7.0-20070801.tar.gz \
+    && cd mecab-ipadic-2.7.0-20070801 \
+    && ./configure --with-charset=utf8 \
+    && make \
+    && make install \
+    && cd .. \
+    && rm -rf mecab-ipadic-2.7.0-20070801
 
 # setup python
 COPY ./requirements.txt /opt/

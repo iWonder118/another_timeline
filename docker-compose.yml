@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  another_timeline:
+    container_name: another_timeline
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 9000:8080
+    tty: true
